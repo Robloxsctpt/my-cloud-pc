@@ -1,15 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# ตั้งค่ารหัสผ่าน VNC เป็น 123456 (เอาไว้กรอกตอนต่อ AVNC)
-mkdir -p ~/.vnc
-echo "123456" | vncpasswd -f > ~/.vnc/passwd
-chmod 600 ~/.vnc/passwd
+# 1. รัน Python HTTP Server หลอกพอร์ตไว้เบื้องหลัง (Render จะได้เข้าใจว่านี่คือ Web Service และเปลี่ยนสถานะเป็น Live)
+python3 -m http.server 10000 &
 
-# สั่งรัน VNC Server บนหน้าจอความละเอียด 1280x720 พอร์ต 5901
-vncserver :1 -geometry 1280x720 -depth 24
+# 2. รันคำสั่งเดิมของมึง (เช่น VNC / Termux / Cloudflare Tunnel)
+# ตัวอย่าง: รัน cloudflared เพื่อต่ออุโมงค์ VNC
+cloudflared tunnel --url tcp://localhost:5901 &
 
-echo "=== VNC Started. Starting Cloudflare Tunnel... ==="
-
-# สั่งเจาะอุโมงค์ Cloudflare แบบ Quick Tunnel ไปที่พอร์ต VNC (5901)
-# มันจะสร้างลิงก์ .trycloudflare.com ออกมาให้ เอาไปแปลงใส่ AVNC
-cloudflared tunnel --url tcp://localhost:5901
+# รอให้ทุกอย่างรันค้างไว้
+wait
