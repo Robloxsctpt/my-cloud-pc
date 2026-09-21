@@ -11,10 +11,10 @@ chmod 600 ~/.vnc/passwd
 # 3. สั่งรัน VNC Server บนพอร์ต 5901
 vncserver :1 -geometry 1280x720 -depth 24
 
-echo "=== VNC Started. Opening Serveo TCP Tunnel... ==="
+echo "=== VNC Started. Opening Pinggy TCP Tunnel... ==="
 
-# 4. ใช้ Serveo เปิดพอร์ต TCP ตรงๆ ออกภายนอก (จะได้ Host และ Port ไปใส่ AVNC ตรงๆ)
-ssh -o StrictHostKeyChecking=no -R 0:localhost:5901 serveo.net &
+# 4. ใช้ Pinggy เปิดพอร์ต TCP ตรงๆ ออกภายนอก
+ssh -p 443 -o StrictHostKeyChecking=no -R0:localhost:5901 tcp@a.pinggy.io &
 
 # รอค้างไว้
 wait
