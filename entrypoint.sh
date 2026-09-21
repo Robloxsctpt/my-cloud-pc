@@ -1,12 +1,30 @@
 #!/usr/bin/env bash
+
 export USER=root
 export HOME=/root
+
+# เคลียร์ล็อกเก่าให้เกลี้ยง
 rm -rf /tmp/.X1-lock /tmp/.X11-unix/X1
-killall Xtightvnc Xvnc python3 ssh &>/dev/null
+killall Xtightvnc Xvnc python3 localxpose &>/dev/null
+
+# 1. รัน Python HTTP Server หลอกพอร์ต 10000 ไว้
 python3 -m http.server 10000 &
+
+# 2. ตั้งค่ารหัสผ่าน VNC แบบว่างไว้
 mkdir -p ~/.vnc
 echo "" | vncpasswd -f > ~/.vnc/passwd
 chmod 600 ~/.vnc/passwd
+
+# 3. สั่งรัน VNC Server
 vncserver :1 -geometry 1280x720 -depth 24
-echo "=== Starting Serveo Tunnel ==="
-ssh -o StrictHostKeyChecking=no -R 0:localhost:5901 serveo.net
+
+echo "=== VNC Started. Installing LocalXpose Tunnel ==="
+
+# 4. ดาวน์โหลดและติดตั้ง LocalXpose (เครื่องมือสร้างอุโมงค์ TCP ที่เสถียรสำหรับมือถือ)
+curl -s https://localxpose.io/installer/linux.sh | bash &>/dev/null
+
+# 5. เปิดพอร์ต TCP 5901 ผ่าน LocalXpose
+localtunnel --protocol tcp --to :5901 &
+
+# รอค้างไว้
+wait
